@@ -1,0 +1,36 @@
+name: instabox-ci
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: instabox-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wake Instabox
+        env:
+          INSTABOX_API_KEY: ${{ secrets.INSTABOX_API_KEY }}
+          INSTABOX_MACHINE_ID: ${{ secrets.INSTABOX_MACHINE_ID }}
+        run: chmod +x scripts/instabox-wake.sh && ./scripts/instabox-wake.sh
+  ci:
+    needs: wake
+    runs-on: [self-hosted, instabox, instabox-usa]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Repo presence
+        run: |
+          echo "ok from $(hostname) labels=self-hosted, instabox, instabox-usa"
+          uname -a
+          ls -la
