@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Wake Instabox
         env:
           INSTABOX_API_KEY: ${{ secrets.INSTABOX_API_KEY }}
@@ -28,7 +28,7 @@ jobs:
     runs-on: [self-hosted, instabox, instabox-usa]
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Repo presence
         run: |
           echo "ok from $(hostname) labels=self-hosted, instabox, instabox-usa"
